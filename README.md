@@ -112,6 +112,11 @@ yarn install --check-files
 
 After finishing the above steps, you should be able to access the web application on [localhost:3000](http://localhost:3000)
 
-## Trouble shooting
+## Trouble shooting & inquiries
 
-This application is still in development. If you encounter any errors, we are glad if you file an issue on the issue tracker or contact us at info@grammatek.com.
+This application is still in development. If you encounter any errors, feel free to open an issue inside the
+[issue tracker](https://github.com/grammatek/pedi/issues). You can also [contact us](mailto:info@grammatek.com) via email.
+
+## Contributing
+
+You can contribute to this project by forking it, creating a private branch and opening a new [pull request](https://github.com/grammatek/pedi/pulls).  
