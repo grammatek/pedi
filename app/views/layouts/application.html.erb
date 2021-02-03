@@ -20,6 +20,7 @@
     <% end %>
     <%= yield %>
   </div>
+  <%= audio_tag '', preload: 'none', id: 'audio-player', autoplay: false, controls: true, type:'audio/mpeg' %>
   <%= javascript_pack_tag 'custom', 'data-turbolinks-track': 'reload' %>
   </body>
 </html>

@@ -1,5 +1,5 @@
-
 @import "./config.scss";
+
 body {
   background-color: #F7F7F7;
 }
@@ -21,6 +21,9 @@ textarea {
   }
 }
 
+#audio-player{
+  display: none;
+}
 
 /* typography */
 
@@ -37,8 +40,6 @@ h1 {
   font-size: 40px;
   /*padding-bottom: 70px;*/
 }
-
-
 
 p {
   font-size: 1.1em; 
@@ -70,14 +71,10 @@ p {
   width: 100%;
 }
 
-
-
-
 body{
   padding-top: 100px;
   padding-bottom: 50px;
 }
-
 
 .pagination{
   margin: 0 auto;
@@ -100,28 +97,24 @@ body{
       justify-self: center;
     }
   }
-
-  
 }
 
 .divTableBody{
   width: 100%;
   margin-bottom: 50px;
-  
 }
 
 .entry{
- 
   &.edit{
     .divTableRow:first-child{
       display: none;
     }
-   }
+  }
 }
 
 .divTableRow{
   border-bottom:1px solid $gray-medium-light;
-  grid-template-columns: 1fr 2fr 20px 20px ;
+  grid-template-columns: 1fr 2fr 30px 20px 20px ;
   padding: 10px;
   
   display: grid;
@@ -150,14 +143,12 @@ body{
   margin-bottom: 5px;
 }
 
-
-
 div.divTableCell{
 
   &__correct{
     grid-row-start: 1;
     grid-row-end: span 2;
-    grid-column-start: 4;
+    grid-column-start: 5;
     justify-self: center;
     align-self: center;
   }
@@ -169,12 +160,19 @@ div.divTableCell{
   &__comment{
     grid-row-start: 1;
     grid-row-end: span 2;
-    grid-column-start: 3;
+    grid-column-start: 4;
     align-self: center;
     span{
       height: 28px;
       display: block;
     }
+  }
+
+  &__player{
+    grid-row-start: 1;
+    grid-row-end: span 2;
+    grid-column-start: 3;
+    align-self: center;
   }
 
   &.-row2{
@@ -228,6 +226,49 @@ form.divTableCell{
   }
 }
 
+.entry-audio-player{
+  padding: 0;
+  border: none;
+  border-radius: 100%;
+  width: 30px;
+  height: 30px;
+  display: block;
+  position: relative;
+  background: #fff;
+
+  &:focus{
+    outline: none;
+    box-shadow: 1px 1px 6px rgba(0,0,0,0.5);
+  }
+
+  svg{
+    pointer-events: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    path{
+      fill: #333;
+    }
+  }
+
+  &__play{
+    display: block;
+  }
+  &__pause{
+    display: none;
+  }
+
+  &[data-status='active']{
+    .entry-audio-player__pause{
+      display: block;
+    }
+    .entry-audio-player__play{
+      display: none;
+    }
+  }
+}
 
 
 

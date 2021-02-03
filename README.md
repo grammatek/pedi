@@ -109,8 +109,20 @@ If you see any problems related to yarn, try to call the following command in a 
 ```
 yarn install --check-files
 ```
-
 After finishing the above steps, you should be able to access the web application on [localhost:3000](http://localhost:3000)
+
+## TTS
+
+Currently, Pedi uses Amazon Polly to 'play' the phonemes. This requires Polly API access to Amazon Cloud services.
+The way how Pedi implements authentication for Amazon Polly, is implemented via the
+[Rails credential system](https://edgeguides.rubyonrails.org/security.html#custom-credentials).
+The following credential keys should be added to the application credentials via `rails credentials:edit`:
+
+```ruby
+# amazon Polly credentials
+amazon_polly_key: <your amazon polly key>
+amazon_polly_secret: <your amazon polly secret>
+```
 
 ## Trouble shooting & inquiries
 
