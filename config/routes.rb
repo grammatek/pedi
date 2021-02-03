@@ -18,11 +18,14 @@ Rails.application.routes.draw do
     end
     post 'export', on: :member
     resources :entries do
-      post 'finalize', on: :member
+      member do
+        post 'finalize'
+        post 'play'
+        get 'play'
+      end
     end
   end
   resources :sampas
-
   resources :users
   resources :account_activations, only: [:edit]
   resources :password_resets, only: [:new, :create, :edit, :update]

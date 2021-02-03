@@ -1,25 +1,38 @@
 <div class="divTableRow <%= entry.finished ? 'finished' : ''%> <%= entry.warning ? 'warning' : ''%>">
 
   <div class="divTableCell divTableCell__entry">
-  <%= link_to "#{entry.word}", edit_dictionary_entry_path(@dictionary, entry), remote: true  %>
+    <%= link_to "#{entry.word}", edit_dictionary_entry_path(@dictionary, entry), remote: true  %>
   </div>
   <div class="divTableCell divTableCell__sampa"><%= entry.sampa %></div>
-  <div class="divTableCell divTableCell__comment">
-   <% if entry.comment != "" %>
-  <span title="<%= entry.comment %>">
-    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-card-text" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-     <path fill-rule="evenodd" d="M14.5 3h-13a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
-     <path fill-rule="evenodd" d="M3 5.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 8zm0 2.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/>
+  <div class="divTableCell divTableCell__player">
+    <button class="entry-audio-player" data-status="inactive" title="play"  data-src="<%= play_dictionary_entry_path(@dictionary, entry)%>">
+      <svg class="entry-audio-player__play" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-play-circle" viewBox="0 0 16 16">
+        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+        <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"/>
+      </svg>
+      <svg class="entry-audio-player__pause" xmlns="http://www.w3.org/2000/svg"  fill="currentColor" class="bi bi-pause-circle" viewBox="0 0 16 16">
+        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+        <path d="M5 6.25a1.25 1.25 0 1 1 2.5 0v3.5a1.25 1.25 0 1 1-2.5 0v-3.5zm3.5 0a1.25 1.25 0 1 1 2.5 0v3.5a1.25 1.25 0 1 1-2.5 0v-3.5z"/>
     </svg>
-  </span>
-   <%end %>
-    </div>
+    </button>
+
+  </div>
+  <div class="divTableCell divTableCell__comment">
+    <% if entry.comment != "" %>
+      <span title="<%= entry.comment %>">
+        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-card-text" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" d="M14.5 3h-13a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
+          <path fill-rule="evenodd" d="M3 5.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 8zm0 2.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/>
+        </svg>
+      </span>
+    <%end %>
+  </div>
   <div class="divTableCell divTableCell__correct">
     <%= check_box_tag 'Correct', entry.id, entry.finished, :data => {
         :remote => true,
         :url => finalize_dictionary_entry_path(@dictionary, entry),
         :method => :post
-    }, class: 'correct-check'
+      }, class: 'correct-check'
     %>
   </div>
   <div class="divTableCell -row2">

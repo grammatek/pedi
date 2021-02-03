@@ -1,5 +1,6 @@
 var bodyEl = document.body;
 var firstFilterInputEl = document.querySelector('.main-filter form input');
+var audioPlayer = document.getElementById('audio-player');
 var filterIsOpen = false;
 //trigger event listener on correct checkbox.
 document.body.addEventListener('click', (e) =>{
@@ -73,5 +74,44 @@ dictionaryEntriesEl.addEventListener('click', (e)=>{
         var elFormParent = currEl.closest('.divTableRow');
         elFormParent.remove();
         elEntryParent.classList.remove('edit');
+    }
+})
+
+/// setup audio player button for entry
+var activePlayerButton = null;
+audioPlayer.addEventListener('play', function(){
+    console.log('start playing');
+})
+audioPlayer.addEventListener('ended', function(){
+    console.log('end playing');
+    if(activePlayerButton){
+        activePlayerButton.dataset.status = "inactive";
+    }
+})
+
+document.body.addEventListener('click', (e) =>{
+    if(e.target.classList.contains('entry-audio-player') && audioPlayer){
+        var isPlaying = e.target.dataset.status;
+        if(isPlaying === "active"){
+            audioPlayer.pause();
+            e.target.dataset.status = "inactive"
+        }
+        else{
+            var src = e.target.dataset.src
+
+            if(src === audioPlayer.src){
+                audioPlayer.play();
+            }
+            else{
+                audioPlayer.src = src;
+                audioPlayer.play();
+            }
+
+            e.target.dataset.status = "active"
+            if(activePlayerButton && activePlayerButton !== e.target){
+                activePlayerButton.dataset.status = "inactive";
+            }
+            activePlayerButton = e.target;
+        }
     }
 })

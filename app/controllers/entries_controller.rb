@@ -1,6 +1,7 @@
 class EntriesController < ApplicationController
   before_action :log_in
-  before_action :set_entry, only: [:show, :edit, :update, :destroy, :finalize]
+  before_action :set_entry, only: [:show, :edit, :update, :destroy, :finalize, :play]
+  before_action :set_cache_headers
 
   # GET /entries
   # GET /entries.json
@@ -92,6 +93,18 @@ class EntriesController < ApplicationController
     end
   end
 
+  # plays the given Sampa by reaching out to Amazon Polly web-service
+  def play
+    logger.info "================ START POLLY ==============="
+    answer_audio_file = PollyService.call(@entry)
+    logger.info "================ END POLLY ==============="
+    respond_to do |format|
+      format.html do
+        send_file(answer_audio_file, :type => 'audio/mpeg', :disposition => 'inline')
+      end
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_entry
@@ -108,4 +121,11 @@ class EntriesController < ApplicationController
   def log_in
     redirect_to help_path unless helpers.logged_in?
   end
+
+  def set_cache_headers
+    response.headers["Cache-Control"] = "no-cache, no-store"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "Mon, 01 Jan 1990 00:00:00 GMT"
+  end
+
 end
