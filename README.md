@@ -132,3 +132,16 @@ This application is still in development. If you encounter any errors, feel free
 ## Contributing
 
 You can contribute to this project by forking it, creating a private branch and opening a new [pull request](https://github.com/grammatek/pedi/pulls).  
+
+
+## License
+
+[![Grammatek](app/assets/images/grammatek-logo-small.png)](https://www.grammatek.com)
+
+Copyright © 2020, 2021 Grammatek ehf.
+
+This software is developed under the auspices of the Icelandic Government 5-Year Language Technology Program, described
+[here](https://www.stjornarradid.is/lisalib/getfile.aspx?itemid=56f6368e-54f0-11e7-941a-005056bc530c) and
+[here](https://clarin.is/media/uploads/mlt-en.pdf) (English).
+
+This software is licensed under the [Apache License](LICENSE)
