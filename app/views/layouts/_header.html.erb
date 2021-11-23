@@ -36,6 +36,7 @@
               <%= link_to t('Logout'), logout_path, {method: :delete, class: "dropdown-item" }%>
             </div>
           </li>
+          <%= render 'layouts/tts' %>
         <% else %>
           <li><%= link_to t('Login'), login_path, class: "nav-link" %></li>
             <li class="nav-item">

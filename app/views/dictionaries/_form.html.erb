@@ -12,7 +12,7 @@
   <% end %>
 
   <div class="field">
-    <%= form.label t(:name) %>
+    <%= form.label t(:Name) %>
     <%= form.text_field :name %>
   </div>
   <%= form.collection_select(:sampa_id, Sampa.order(:name), :id, :name,

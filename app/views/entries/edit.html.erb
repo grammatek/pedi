@@ -1,6 +1,7 @@
 <br>
 <h2>Edit Entry</h2>
-<% cookies[:before_url] = url_for(:back) %>
+<% #noinspection RailsParamDefResolve
+   cookies[:before_url] = url_for(:back) %>
 <%= render 'form', entry: @entry %>
 
 <%= link_to 'Back', :back %>

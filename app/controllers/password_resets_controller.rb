@@ -1,11 +1,11 @@
+# frozen_string_literal: true
+
 class PasswordResetsController < ApplicationController
-  before_action :get_user, only: [:edit, :update]
-  #before_action :valid_user, only: [:edit, :update]
-  #before_action :check_expiration, only: [:edit, :update]
+  before_action :get_user, only: %i[edit update]
+  # before_action :valid_user, only: [:edit, :update]
+  # before_action :check_expiration, only: [:edit, :update]
 
-
-  def new
-  end
+  def new; end
 
   def edit
     @user = current_user
@@ -16,22 +16,22 @@ class PasswordResetsController < ApplicationController
     if @user
       @user.create_reset_digest
       @user.send_password_reset_email
-      flash[:info] = "Sendi tölvupóst með upplýsingum til þess að breyta lykilorði"
+      flash[:info] = 'Sendi tölvupóst með upplýsingum til þess að breyta lykilorði'
       redirect_to root_url
     else
-      flash.now[:danger] = "Netfang fannst ekki!"
+      flash.now[:danger] = 'Netfang fannst ekki!'
       render 'new'
     end
   end
 
   def update
-    puts "======================= Going for an update ... ======================="
+    Rails.logger.debug '======================= Going for an update ... ======================='
     if params[:user][:password].empty?
-      @user.errors.add(:password, "ekkert lykilorð")
+      @user.errors.add(:password, 'ekkert lykilorð')
       render 'edit'
-    elsif @user.update_attributes(user_params)
+    elsif @user.update(user_params)
       log_in @user
-      flash[:success] = "Lykilorð hefur verið uppfært"
+      flash[:success] = 'Lykilorð hefur verið uppfært'
       redirect_to @user
     else
       render 'edit'
@@ -40,25 +40,22 @@ class PasswordResetsController < ApplicationController
 
   private
 
-    def user_params
-      params.require(:user).permit(:password, :password_confirmation)
-    end
-
-    def get_user
-      @user = User.find_by(email: params[:email])
-    end
-
-    def valid_user
-      unless(@user && @user.activated? && @user.authenticated?(:reset, params[:id]))
-        redirect_to root_url
-      end
-    end
-
-  def check_expiration
-    if @user.password_reset_expired?
-      flash[:danger] = "Password has expired, please create a new one"
-      redirect_to new_password_reset_url
-    end
+  def user_params
+    params.require(:user).permit(:password, :password_confirmation)
   end
 
+  def get_user
+    @user = User.find_by(email: params[:email])
+  end
+
+  def valid_user
+    redirect_to root_url unless @user&.activated? && @user&.authenticated?(:reset, params[:id])
+  end
+
+  def check_expiration
+    return unless @user.password_reset_expired?
+
+    flash[:danger] = 'Password has expired, please create a new one'
+    redirect_to new_password_reset_url
+  end
 end

@@ -1,14 +1,14 @@
 class DictionariesController < ApplicationController
   before_action :set_current_user
-  before_action :set_dictionary, only: [:show, :edit, :update, :destroy, :export]
+  before_action :set_dictionary, only: %i[show edit update destroy export]
 
   # GET /dictionaries
   # GET /dictionaries.json
   def index
     redirect_to help_path unless helpers.logged_in?
     @dictionaries = Dictionary.all
-    # Todo: sort by name ? If we hide sortable metadata per dictionary in the views html, the frontend can make
-    # Todo: the sorting itself, as this view so far is not paginated
+    # TODO: sort by name ? If we hide sortable metadata per dictionary in the views html,
+    #       the frontend can make the sorting itself, as this view so far is not paginated
   end
 
   # GET /dictionaries/1
@@ -19,7 +19,8 @@ class DictionariesController < ApplicationController
     @comment = params[:comment] || '%'
     @only_warnings = params[:only_warnings] || false
 
-    @sel_entries = @dictionary.entries.with_word(@word).with_sampa(@sampa).with_comment(@comment).ordered
+    @sel_entries = @dictionary.entries.with_word(@word).with_sampa(@sampa)
+                              .with_comment(@comment).ordered
     @sel_entries = @sel_entries.with_warning if @only_warnings
 
     @pagy, @entries = pagy(@sel_entries, count: @sel_entries.count)
@@ -33,8 +34,7 @@ class DictionariesController < ApplicationController
   end
 
   # GET /dictionaries/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /dictionaries
   # POST /dictionaries.json
@@ -99,37 +99,40 @@ class DictionariesController < ApplicationController
       end
     end
     @dictionaries = Dictionary.find(dictionary_ids)
-    puts @dictionaries.inspect
+
     all_entries = @dictionaries.each_with_object([]) do |dict, obj|
       obj.concat dict.entries.all.load
     end
     respond_to do |format|
       format.html do
         send_data gen_as_csv(all_entries), filename: "dictionaries_#{dictionary_ids.join('_')}.csv"
-        end
+      end
       format.json { head :no_content }
-      format.js {render inline: "location.reload();" }
+      format.js { render inline: 'location.reload();' }
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_dictionary
-      @dictionary = Dictionary.find(params[:id])
-    end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def dictionary_params
-      params.require(:dictionary).permit(:name, :edited, :sampa_id, :dictionary_id, :import_data, :word, :sampa,
-                                         :comment, :only_warnings, :is_final, :locale)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_dictionary
+    @dictionary = Dictionary.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def dictionary_params
+    params.require(:dictionary).permit(:name, :edited, :sampa_id, :dictionary_id,
+                                       :import_data, :word, :sampa, :comment, :only_warnings,
+                                       :is_final, :locale)
+  end
 
   def gen_as_csv(entries)
     CSV.generate('', headers: true, col_sep: "\t") do |csv|
-      csv << %w(WORD SAMPA POS PRON_VARIANT IS_COMPOUND COMPOUND_ATTR HAS_PREFIX LANG IS_VALIDATED COMMENT)
+      csv << %w[WORD SAMPA POS PRON_VARIANT IS_COMPOUND COMPOUND_ATTR HAS_PREFIX LANG IS_VALIDATED COMMENT]
       entries.each do |e|
-        is_validated = e.finished && (! e.warning) || false
-        csv << [e.word.strip, e.sampa.strip, e.pos, e.dialect, e.is_compound, e.comp_part, e.prefix, e.lang, is_validated, e.comment.strip]
+        is_validated = e.finished && !e.warning || false
+        csv << [e.word.strip, e.sampa.strip, e.pos, e.dialect, e.is_compound, e.comp_part,
+                e.prefix, e.lang, is_validated, e.comment.strip]
       end
     end
   end

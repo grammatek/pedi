@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'boot'
 
 require 'rails/all'
@@ -18,7 +20,12 @@ module Pedi
     #
 
     # Configure allowed locales
-    config.i18n.available_locales = [:en, :is]
+    config.i18n.available_locales = %i[en is]
     config.i18n.default_locale = :is
+
+    # Configure TTS backend. Possible values are :tiro (recommended), or :polly (Amazon Polly).
+    # The former provides 2 Icelandic neural voices and 2 unit selection voices, whereas the latter
+    # provides only 2 unit selection voices
+    config.tts_backend = :tiro
   end
 end

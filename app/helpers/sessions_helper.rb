@@ -1,5 +1,6 @@
-module SessionsHelper
+# frozen_string_literal: true
 
+module SessionsHelper
   def log_in(user)
     session[:user_id] = user.id
   end
@@ -21,11 +22,40 @@ module SessionsHelper
       @current_user ||= User.find_by(id: user_id)
     elsif (user_id = cookies.signed[:user_id])
       user = User.find_by(id: user_id)
-      if user && user.authenticated?(:remember, cookies[:remember_token])
+      if user&.authenticated?(:remember, cookies[:remember_token])
         log_in user
         @current_user = user
       end
     end
+  end
+
+  # Returns the tts voice selected by user
+  def current_tts_voice
+    if (user_id = session[:user_id])
+      @user = User.find_by(id: user_id)
+      @current_voice = @user.tts_voice
+    end
+    return unless @user
+
+    unless @current_voice
+      voice = tts_voices&.first
+      if voice
+        @user.tts_voice = voice
+        @user.save
+        @current_voice = voice
+      else
+        'No voices available'
+      end
+    end
+    @current_voice
+  end
+
+  # Returns all available tts voices
+  def tts_voices
+    if session[:available_tts_voices].nil?
+      session[:available_tts_voices] = TtsService.voices
+    end
+    session[:available_tts_voices]
   end
 
   def logged_in?
@@ -33,9 +63,8 @@ module SessionsHelper
   end
 
   def logged_in_as_admin?
-    if logged_in?
-      return current_user.admin
-    end
+    return current_user.admin if logged_in?
+
     false
   end
 
@@ -61,5 +90,4 @@ module SessionsHelper
     session.delete(:user_id)
     @current_user = nil
   end
-
 end

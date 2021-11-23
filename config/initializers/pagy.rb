@@ -1,14 +1,12 @@
-# encoding: utf-8
 # frozen_string_literal: true
 
 # Pagy initializer file (3.7.1)
-# Customize only what you really need and notice that Pagy works also without any of the following lines.
-# Should you just cherry pick part of this file, please maintain the require-order of the extras
-
+# Customize only what you really need and notice that Pagy works also without any of the following
+# lines. Should you just cherry pick part of this file, please maintain the require-order of the
+# extras
 
 # Extras
 # See https://ddnexus.github.io/pagy/extras
-
 
 # Backend Extras
 
@@ -28,7 +26,6 @@
 # Searchkick extra: Paginate `Searchkick::Results` objects
 # See https://ddnexus.github.io/pagy/extras/searchkick
 # require 'pagy/extras/searchkick'
-
 
 # Frontend Extras
 
@@ -101,18 +98,14 @@ require 'pagy/extras/bootstrap'
 # See https://ddnexus.github.io/pagy/extras/trim
 # require 'pagy/extras/trim'
 
-
-
 # Pagy Variables
 # See https://ddnexus.github.io/pagy/api/pagy#variables
 # All the Pagy::VARS are set for all the Pagy instances but can be overridden
 # per instance by just passing them to Pagy.new or the #pagy controller method
 
-
 # Instance variables
 # See https://ddnexus.github.io/pagy/api/pagy#instance-variables
 # Pagy::VARS[:items] = 20                                   # default
-
 
 # Other Variables
 # See https://ddnexus.github.io/pagy/api/pagy#other-variables
@@ -122,14 +115,12 @@ require 'pagy/extras/bootstrap'
 # Pagy::VARS[:anchor]     = '#anchor'                       # example
 # Pagy::VARS[:link_extra] = 'data-remote="true"'            # example
 
-
 # Rails
 
 # Rails: extras assets path required by the helpers that use javascript
 # (pagy*_nav_js, pagy*_combo_nav_js, and pagy_items_selector_js)
 # See https://ddnexus.github.io/pagy/extras#javascript
 # Rails.application.config.assets.paths << Pagy.root.join('javascripts')
-
 
 # I18n
 
@@ -159,7 +150,6 @@ require 'pagy/extras/bootstrap'
 #                 {locale: 'xyz',  # not built-in
 #                  filepath: 'path/to/pagy-xyz.yml',
 #                  pluralize: lambda{|count| ... } )
-
 
 # I18n extra: uses the standard i18n gem which is ~18x slower using ~10x more memory
 # than the default pagy internal i18n (see above)

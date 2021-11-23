@@ -1,4 +1,4 @@
-require "application_system_test_case"
+require 'application_system_test_case'
 
 class DictionariesTest < ApplicationSystemTestCase
   setup do
@@ -10,49 +10,48 @@ class DictionariesTest < ApplicationSystemTestCase
 
   def login_as(user)
     visit login_url
-    fill_in "EMail", with: user.email
-    fill_in "Password", with: user.password
+    fill_in 'EMail', with: user.email
+    fill_in 'Password', with: user.password
     print page.html
 
-    save_and_open_screenshot
-    click_button "Login"
+    click_button 'Login'
   end
 
-  test "visiting the index" do
+  test 'visiting the index' do
     visit dictionaries_url
-    assert_selector "h2", text: "Dictionaries"
+    assert_selector 'h2', text: 'Dictionaries'
   end
 
-  test "creating a Dictionary" do
+  test 'creating a Dictionary' do
     visit dictionaries_url
-    click_on "New Dictionary"
+    click_on 'New Dictionary'
 
-    fill_in "Edited", with: @dictionary.edited
-    fill_in "Name", with: @dictionary.name
-    click_on "Create Dictionary"
+    fill_in 'Edited', with: @dictionary.edited
+    fill_in 'Name', with: @dictionary.name
+    click_on 'Create Dictionary'
 
-    assert_text "Dictionary was successfully created"
-    click_on "Back"
+    assert_text 'Dictionary was successfully created'
+    click_on 'Back'
   end
 
-  test "updating a Dictionary" do
+  test 'updating a Dictionary' do
     visit dictionaries_url
-    click_on "Edit", match: :first
+    click_on 'Edit', match: :first
 
-    fill_in "Edited", with: @dictionary.edited
-    fill_in "Name", with: @dictionary.name
-    click_on "Update Dictionary"
+    fill_in 'Edited', with: @dictionary.edited
+    fill_in 'Name', with: @dictionary.name
+    click_on 'Update Dictionary'
 
-    assert_text "Dictionary was successfully updated"
-    click_on "Back"
+    assert_text 'Dictionary was successfully updated'
+    click_on 'Back'
   end
 
-  test "destroying a Dictionary" do
+  test 'destroying a Dictionary' do
     visit dictionaries_url
     page.accept_confirm do
-      click_on "Destroy", match: :first
+      click_on 'Destroy', match: :first
     end
 
-    assert_text "Dictionary was successfully destroyed"
+    assert_text 'Dictionary was successfully destroyed'
   end
 end

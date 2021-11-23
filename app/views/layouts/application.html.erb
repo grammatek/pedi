@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="">
   <head>
     <title><%= full_title(yield(:title)) %></title>
     <%= csrf_meta_tags %>
@@ -20,7 +20,7 @@
     <% end %>
     <%= yield %>
   </div>
-  <%= audio_tag '', preload: 'none', id: 'audio-player', autoplay: false, controls: true, type:'audio/mpeg' %>
+  <%= audio_tag '', preload: 'none', id: 'audio-player', autoplay: false, autobuffer: false, controls: true, type:'audio/mpeg' %>
   <%= javascript_pack_tag 'custom', 'data-turbolinks-track': 'reload' %>
   </body>
 </html>

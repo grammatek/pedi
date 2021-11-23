@@ -30,7 +30,6 @@ if(dictionaryTableEl){
     })
 }
 
-
 //trigger filter visibility
 var filterTrigger = document.querySelector('#filterTrigger');
 
@@ -63,19 +62,19 @@ if(firstFilterInputEl){
     })
 }
 
-
 //dictionary row - handle events
-
 var dictionaryEntriesEl = document.getElementById('dictionaryEntries');
-dictionaryEntriesEl.addEventListener('click', (e)=>{
-    var currEl = e.target;
-    if(currEl.classList.contains('closeRow')){
-        var elEntryParent = currEl.closest('.entry');
-        var elFormParent = currEl.closest('.divTableRow');
-        elFormParent.remove();
-        elEntryParent.classList.remove('edit');
-    }
-})
+if (dictionaryEntriesEl) {
+    dictionaryEntriesEl.addEventListener('click', (e)=>{
+        var currEl = e.target;
+        if(currEl.classList.contains('closeRow')){
+            var elEntryParent = currEl.closest('.entry');
+            var elFormParent = currEl.closest('.divTableRow');
+            elFormParent.remove();
+            elEntryParent.classList.remove('edit');
+        }
+    })
+}
 
 /// setup audio player button for entry
 var activePlayerButton = null;
@@ -97,7 +96,7 @@ document.body.addEventListener('click', (e) =>{
             e.target.dataset.status = "inactive"
         }
         else{
-            var src = e.target.dataset.src
+            var src = e.target.dataset.src + "&t=" + new Date().getTime();
 
             if(src === audioPlayer.src){
                 audioPlayer.play();

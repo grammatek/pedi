@@ -1,14 +1,15 @@
-class PollyService < ApplicationService
+# frozen_string_literal: true
 
+class PollyService < ApplicationService
   attr_reader :text
 
   def self.update
     # Create audio directory
     @@audio_dir = Rails.root.join('./app/assets/audios')
-    FileUtils::mkdir_p @@audio_dir
+    FileUtils.mkdir_p @@audio_dir
     # Remove old audio files from previous run
     old_audios = Dir.glob "#{@@audio_dir}/polly-*"
-    FileUtils::rm_f(old_audios)
+    FileUtils.rm_f(old_audios)
     # Connect to Polly
     access_key = Rails.application.credentials.amazon_polly_key
     access_secret = Rails.application.credentials.amazon_polly_secret
@@ -17,23 +18,25 @@ class PollyService < ApplicationService
     @@polly = Aws::Polly::Client.new(region: region, credentials: creds)
   end
 
-  def initialize(entry)
+  def initialize(entry, voice_name = 'Karl')
+    super()
     @@polly ||= nil
     @type = 'ssml'
     @entry = entry
+    @voice_id = voice_name
 
     # The Sampa set used for Amazon polly differs from the one used at Pedi.
     # Therefore, we need to replace our Sampas with the equivalent ones used
     # at Polly: http://developer.ivona.com/en/ttsresources/phonesets/phoneset-is.html
     polly_replace = {
-        'p ' => 'b ',
-        't ' => 'd ',
-        'k ' => 'g ',
-        'ou' => 'Ou',
-        '9i' => '9Y',
+      'p ' => 'b ',
+      't ' => 'd ',
+      'k ' => 'g ',
+      'ou' => 'Ou',
+      '9i' => '9Y'
     }
     sampa = entry.sampa
-    polly_replace.each { |k,v| sampa.gsub!(k, v) }
+    polly_replace.each { |k, v| sampa.gsub!(k, v) }
 
     # annotate text as X-Sampa
     # "<speak>
@@ -46,18 +49,24 @@ class PollyService < ApplicationService
   # Return generated audio file for text given in constructor
   def call
     PollyService.update if @@polly.nil?
-    mp3_file = Rails.root.join("#{@@audio_dir}/polly-#{@entry.id}-#{@entry.updated_at}.mp3")
+    mp3_file = Rails.root.join("#{@@audio_dir}/polly-#{@voice_id}-#{@entry.id}-#{@entry.updated_at}.mp3")
     # don't request a new file from polly if the same file already exists
-    return mp3_file if File::exist?(mp3_file)
+    return mp3_file if File.exist?(mp3_file)
+
     params = {
-        response_target: mp3_file,
-        output_format: "mp3",
-        text: @text,
-        text_type: @type,
-        voice_id: "Dora",
+      response_target: mp3_file,
+      output_format: 'mp3',
+      text: @text,
+      text_type: @type,
+      voice_id: @voice_id
     }
     Rails.logger.debug "Polly: #{params}"
-    @@polly.synthesize_speech(params) unless @@polly.nil?
+    begin
+      @@polly&.synthesize_speech(params)
+    rescue
+      FileUtils.rm_f(mp3_file)
+      return Rails.root.join("#{@@audio_dir}/buzzer.wav")
+    end
     mp3_file
   end
 end

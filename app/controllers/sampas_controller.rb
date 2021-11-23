@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class SampasController < ApplicationController
   before_action :log_in
-  before_action :set_sampa, only: [:show, :edit, :update, :destroy]
+  before_action :set_sampa, only: %i[show destroy]
 
   # GET /sampas
   # GET /sampas.json
@@ -10,8 +12,7 @@ class SampasController < ApplicationController
 
   # GET /sampas/1
   # GET /sampas/1.json
-  def show
-  end
+  def show; end
 
   # GET /sampas/new
   def new
@@ -20,8 +21,8 @@ class SampasController < ApplicationController
 
   def destroy
     @sampa.destroy
-    flash[:success] = "SAMPA entry has been deleted"
-    redirect_to request.referrer || root_url
+    flash[:success] = 'SAMPA entry has been deleted'
+    redirect_to request.referer || root_url
   end
 
   # POST /sampas
@@ -38,7 +39,8 @@ class SampasController < ApplicationController
       end
     end
   end
-private
+
+  private
 
   # Use callbacks to share common setup or constraints between actions.
   def set_sampa
