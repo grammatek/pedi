@@ -56,4 +56,10 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to users_url
   end
+
+  test 'should update tts voice for user' do
+    put tts_path,
+          params: { id: @user.id, user: { tts_voice: 'Karl' }}
+    assert_redirected_to root_path
+  end
 end

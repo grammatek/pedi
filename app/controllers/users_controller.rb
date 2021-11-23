@@ -2,7 +2,7 @@
 
 class UsersController < ApplicationController
   before_action :log_in
-  before_action :set_user, only: %i[show edit update destroy]
+  before_action :set_user, only: %i[show edit update destroy tts]
 
   # GET /users
   # GET /users.json
@@ -43,12 +43,22 @@ class UsersController < ApplicationController
   def update
     respond_to do |format|
       if @user.update(user_params)
-        format.js {render inline: "location.reload();" }
-        format.html { redirect_back(fallback_location: root_path) }
-        format.json { head :no_content }
+        format.html { redirect_to @user }
+        format.json { render :show, status: :ok, location: @user }
       else
         format.html { render :edit }
         format.json { render json: @user.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # PATCH/PUT /tts
+  def tts
+    respond_to do |format|
+      if @user.update(user_params)
+        format.js {render inline: "location.reload();" }
+        format.html { redirect_back(fallback_location: root_path) }
+        format.json { head :no_content }
       end
     end
   end
