@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  app_pedi:
+    build:
+      context: .
+    volumes:
+      - ./:/project/src
+
+  web:
+    # this makes it possible to run docker-compose locally and then
+    # to reach the app at localhost:8080
+    ports:
+      - "8080:8080"

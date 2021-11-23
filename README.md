@@ -1,8 +1,8 @@
-# Pedi - A Pronunciation Dictionary Editor
+# PEDI - A Pronunciation Dictionary Editor
 
 Pedi is a web application to read, edit and export pronunciation dictionaries. 
 
-## Features of the Prototype
+## Features of PEDI
 
 ### Import SAMPA list
 
@@ -87,34 +87,57 @@ The application is available in Icelandic and English. Icelandic is the default 
 
 ## Getting started
 
-First make sure to have Ruby installed. Afterwards, run `bundle` in the root directory. Then follow these steps:
+First make sure to have Ruby installed. The currently used version of Ruby as of the Gemfile is `2.6.8`. It is recommended to use either [rvm](https://rvm.io/) or
+[rbenv](https://github.com/rbenv/rbenv) for your Ruby installations.
+
+After making sure, the correct Ruby version is installed, run `bundle` in the root directory.
+
+### Install node + yarn
+You need to install [node.js](https://nodejs.org/en/) and [yarn](https://yarnpkg.com/) for managing the dependencies for the Javascript part of the Rails application.
+On a Mac, you probably should use [homebrew](https://brew.sh/index_de) to install these prerequisites. Unfortunately, we had a lot of problems with recent node.js version dependencies,
+therefore use the following commands to install these prerequisites on your Mac at a specific version known for us to work:
 
 ```bash
-rails db:create
-rails db:migrate
-rails db:seed
-rails server
+brew install node@14
+export PATH="/usr/local/opt/node@14/bin:$PATH"
+npm install --global yarn
+```
+
+### Prepare running the Ruby on Rails application
+```bash
+rails assets:precompile
+rails db:prepare
 ````
-The seed data should be enough to give you an idea how this application works.
+
+The seed data in `db/seed.rb` should give you an idea how you can customize users/passwords to your needs.
 
 For subsequents updates of this application, you just need to use these commands:
 
 ```bash
-rails db:migrate
+# Just in case, you changed the database schema. otherwise omit this step
+rails db:migrate 
+
+# To start the rails application in development mode
 rails server
 ```
-
 If you see any problems related to yarn, try to call the following command in a terminal:
 
-```
+```bash
 yarn install --check-files
 ```
 After finishing the above steps, you should be able to access the web application on [localhost:3000](http://localhost:3000)
 
 ## TTS
+You can choose either the Tiro TTS service or Amazon Polly as TTS speech output to read pronunciation of words.
+The former is recommended, as it includes the same Icelandic voices as Amazon Polly anyway and you don't need to configure
+access credentials you would need for accessing the Amazon Polly service.
 
-Currently, Pedi uses Amazon Polly to 'play' the phonemes. This requires Polly API access to Amazon Cloud services.
-The way how Pedi implements authentication for Amazon Polly, is implemented via the
+The TTS backend is configurable in the file config/application.rb under key `config.tts_backend`. After changing this
+value, you should restart the Rails application and also your browser, because the voice list is saved inside your
+browsers session storage and has to be renewed. If you don't change any value here, the Tiro service is used by default.
+
+If you choose Polly, additionally you need to configure Polly API authorization. The Polly API access to Amazon Cloud
+services is implemented by Pedi via the
 [Rails credential system](https://edgeguides.rubyonrails.org/security.html#custom-credentials).
 The following credential keys should be added to the application credentials via `rails credentials:edit`:
 
@@ -124,6 +147,74 @@ amazon_polly_key: <your amazon polly key>
 amazon_polly_secret: <your amazon polly secret>
 ```
 
+You need to register at Amazon, to request your personal credentials.
+
+## Production setup
+
+For running PEDI in a production environment, a docker-compose file has been provided. Here are the steps to build your
+containers and run them locally:
+
+### Building via docker-compose
+
+The building step copies your local PEDI directory inside the container and initializes the application. As this is a
+production setup instead of a development or testing environment, we use a PostgreSQL database and also an NGINX server
+for proxying outside requests. To access PostgreSQL, you need to define database credentials.
+In the build step for docker-compose, you need to provide an `.env` file in your PEDI main directory with the
+following entries:
+```
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=<your-secret-password>
+SECRET_KEY_BASE=<your-secret-keybase>
+RAILS_SERVE_STATIC_FILES=true
+```
+
+To generate your Rails secret key base, type the following in the command shell and fill in the variable `SECRET_KEY_BASE`
+of your `.env` file with its output.
+
+```bash
+rake secret
+```
+
+Afterwards, run the following command:
+
+```bash
+docker-compose build
+```
+
+### Running containers locally
+
+After building the containers, you need  to create a virtual network plane for your containers. To test your environment
+locally, it's also a good practice to use a `docker-compose.override.yml` file, where you define your local settings at the
+time of running the containers. But for a real production setup on a server, you would not use this file.
+
+```yaml
+version: '3'
+
+services:
+  app_pedi:
+    build:
+      context: .
+    volumes:
+      # maps your current directory to a subdirectory /project/src inside the app_pedi container
+      - ./:/project/src
+
+  web:
+    # this makes it possible to run docker-compose locally and then
+    # to reach the app at localhost:8080
+    ports:
+      - "8080:8080"
+```
+
+Start the application:
+
+```bash
+docker network create production_docker
+docker-compse up -d
+```
+
+If you have used the above `docker-compose.override.yml` file, you should be able to access the application at
+`http://localhost:8080`.
+
 ## Trouble shooting & inquiries
 
 This application is still in development. If you encounter any errors, feel free to open an issue inside the
@@ -132,7 +223,6 @@ This application is still in development. If you encounter any errors, feel free
 ## Contributing
 
 You can contribute to this project by forking it, creating a private branch and opening a new [pull request](https://github.com/grammatek/pedi/pulls).  
-
 
 ## License
 

@@ -1,0 +1,47 @@
+version: '3'
+
+volumes:
+  postgres_data: {}
+
+services:
+  app_pedi:
+    build:
+      context: .
+      dockerfile: ./docker/app/DockerFile
+    image: registry-url.of-the-github-project/pedi/app:${APPLICATION_VERSION:-latest}
+    env_file: .env
+    depends_on:
+      - db
+    networks:
+      - backend
+
+  db:
+    image: postgres:11
+    env_file: .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  web:
+    build:
+      context: .
+      dockerfile: ./docker/web/DockerFile
+    image: registry-url.of-the-github-project/pedi/web:${APPLICATION_VERSION:-latest}
+    depends_on:
+      - app_pedi
+    links:
+      # app accesses app_pedi container as app
+      - app_pedi:app
+    expose:
+      - "8080"
+    networks:
+      - backend
+      - default
+
+networks:
+  default:
+    external:
+      name: production_docker-network
+  backend:
+    driver: bridge
