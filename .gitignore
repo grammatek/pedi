@@ -34,3 +34,7 @@
 /yarn-error.log
 yarn-debug.log*
 .yarn-integrity
+coverage/
+.idea/
+app/assets/audios/polly*
+app/assets/audios/tiro*
